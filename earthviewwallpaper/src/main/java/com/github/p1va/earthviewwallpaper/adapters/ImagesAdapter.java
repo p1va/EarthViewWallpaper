@@ -3,13 +3,14 @@ package com.github.p1va.earthviewwallpaper.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.p1va.earthviewwallpaper.R;
-import com.github.p1va.earthviewwallpaper.data.model.GoogleEarthViewImage;
+import com.github.p1va.earthviewwallpaper.data.model.EarthViewImage;
 import com.github.p1va.earthviewwallpaper.ui.SetWallpaperActivity;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +26,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
     /**
      * The images array list
      */
-    public ArrayList<GoogleEarthViewImage> images = new ArrayList<>();
+    public ArrayList<EarthViewImage> images = new ArrayList<>();
 
     /**
      * The context
@@ -34,6 +35,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
 
     /**
      * Creates new instance of ImagesAdapter
+     *
      * @param context the context
      */
     public ImagesAdapter(Context context) {
@@ -67,7 +69,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
     public void onBindViewHolder(ImageViewHolder holder, int position) {
 
         // Get corresponding image
-        final GoogleEarthViewImage image = images.get(position);
+        final EarthViewImage image = images.get(position);
 
         // Get thumb URI
         Uri uri = Uri.parse(image.thumbUrl);
@@ -97,8 +99,10 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
                 .transform(transformation)
                 .into(holder.imageView);
 
+        String label = getLabel(image);
+
         // Set image label
-        holder.textView.setText(image.region + ", " + image.country);
+        holder.textView.setText(label);
     }
 
     /**
@@ -109,5 +113,26 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
     @Override
     public int getItemCount() {
         return images.size();
+    }
+
+    /**
+     * Gets the image label
+     *
+     * @param image the image
+     * @return the label
+     */
+    @NonNull
+    private String getLabel(EarthViewImage image) {
+        String label = "";
+
+        if(image.region != null)
+            label += image.region;
+
+        if(image.region != null && image.country != null)
+            label += ", ";
+
+        if(image.country != null)
+            label += image.country;
+        return label;
     }
 }

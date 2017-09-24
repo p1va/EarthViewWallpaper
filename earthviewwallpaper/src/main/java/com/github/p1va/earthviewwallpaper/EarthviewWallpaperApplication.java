@@ -3,6 +3,7 @@ package com.github.p1va.earthviewwallpaper;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
+import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
 import com.github.p1va.earthviewwallpaper.util.CacheMemoryUtils;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
 import com.squareup.picasso.LruCache;
@@ -46,5 +47,8 @@ public class EarthviewWallpaperApplication extends Application {
                                     .build())
                             .build());
         }
+
+        // Setup data layer
+        EarthViewImagesStore.initialize(this);
     }
 }
