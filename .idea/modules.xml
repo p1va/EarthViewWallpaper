@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EarthViewWallpaper.iml" filepath="$PROJECT_DIR$/EarthViewWallpaper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/earthviewwallpaper/earthviewwallpaper.iml" filepath="$PROJECT_DIR$/earthviewwallpaper/earthviewwallpaper.iml" />
+    </modules>
+  </component>
+</project>
