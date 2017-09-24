@@ -9,24 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.couchbase.lite.QueryEnumerator;
 import com.github.p1va.earthviewwallpaper.R;
 import com.github.p1va.earthviewwallpaper.data.model.EarthViewImage;
 import com.github.p1va.earthviewwallpaper.ui.SetWallpaperActivity;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 import jp.wasabeef.picasso.transformations.CropTransformation;
 
 /**
  * The images recycler view adapter
  */
-public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
-
-    /**
-     * The images array list
-     */
-    public ArrayList<EarthViewImage> images = new ArrayList<>();
+public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageViewHolder> {
 
     /**
      * The context
@@ -34,13 +28,20 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
     private Context mContext;
 
     /**
-     * Creates new instance of ImagesAdapter
+     * The query
+     */
+    private QueryEnumerator mQuery;
+
+    /**
+     * Creates new instance of EarthViewImagesAdapter
      *
      * @param context the context
      */
-    public ImagesAdapter(Context context) {
+    public EarthViewImagesAdapter(Context context, QueryEnumerator query) {
         mContext = context;
+        mQuery = query;
     }
+
 
     /**
      * Called when view holder is created
@@ -50,13 +51,13 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
      * @return the view holder
      */
     @Override
-    public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EarthViewImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         // Get layout view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_preview, parent, false);
 
         // Create view holder
-        return new ImageViewHolder(view);
+        return new EarthViewImageViewHolder(view);
     }
 
     /**
@@ -66,10 +67,10 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
      * @param position the position
      */
     @Override
-    public void onBindViewHolder(ImageViewHolder holder, int position) {
+    public void onBindViewHolder(EarthViewImageViewHolder holder, int position) {
 
         // Get corresponding image
-        final EarthViewImage image = images.get(position);
+        final EarthViewImage image = getItem(position);
 
         // Get thumb URI
         Uri uri = Uri.parse(image.thumbUrl);
@@ -112,7 +113,12 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
      */
     @Override
     public int getItemCount() {
-        return images.size();
+        return mQuery != null ? mQuery.getCount() : 0;
+    }
+
+    private EarthViewImage getItem(int position) {
+        return EarthViewImage.fromDocument(
+                mQuery.getRow(position).getDocument());
     }
 
     /**

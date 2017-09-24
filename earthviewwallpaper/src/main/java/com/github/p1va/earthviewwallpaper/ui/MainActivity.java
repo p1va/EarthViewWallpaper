@@ -8,21 +8,19 @@ import android.support.v7.widget.RecyclerView;
 
 import com.couchbase.lite.QueryEnumerator;
 import com.github.p1va.earthviewwallpaper.R;
-import com.github.p1va.earthviewwallpaper.adapters.ImagesAdapter;
+import com.github.p1va.earthviewwallpaper.adapters.EarthViewImagesAdapter;
 import com.github.p1va.earthviewwallpaper.data.model.EarthViewImage;
 import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
 import com.github.p1va.earthviewwallpaper.util.MeasuramentUtils;
 
 import java.util.ArrayList;
 
-import timber.log.Timber;
-
 public class MainActivity extends AppCompatActivity {
 
     /**
      * The recycler view adapter
      */
-    private ImagesAdapter mImagesAdapter;
+    private EarthViewImagesAdapter mImagesAdapter;
 
     /**
      * Called when the activity is created
@@ -42,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // Create an instance of the images adapter
-        mImagesAdapter = new ImagesAdapter(this);
+        mImagesAdapter = new EarthViewImagesAdapter(this,
+                EarthViewImagesStore
+                        .getInstance()
+                        .getAll());
 
         // Create grid layout manager
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -57,25 +58,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, MeasuramentUtils.convertDpToPx(4, this), true));
 
         // Run the query to retrieve the images
-        new QueryDatabaseTask().execute(0);
+        //new QueryDatabaseTask().execute(0);
     }
-
-    private ArrayList<EarthViewImage> getImagesByCountry(String country) {
-
-        Timber.d("Getting images of " + country);
-
-        QueryEnumerator queryResults = EarthViewImagesStore
-                .getInstance()
-                .getByCountry(country);
-
-        int resultsCount = queryResults.getCount();
-
-        Timber.d(resultsCount + " images found having " + country + " as a country");
-
-        return EarthViewImage.fromQuery(queryResults);
-    }
-
-
 
     private ArrayList<EarthViewImage> getAllImages() {
 
@@ -110,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<EarthViewImage> results) {
 
             // Add results
-            mImagesAdapter.images.clear();
-            mImagesAdapter.images.addAll(results);
+            //mImagesAdapter.images.clear();
+            //mImagesAdapter.images.addAll(results);
 
             // Notify changes
-            mImagesAdapter.notifyDataSetChanged();
+            //mImagesAdapter.notifyDataSetChanged();
         }
     }
 }

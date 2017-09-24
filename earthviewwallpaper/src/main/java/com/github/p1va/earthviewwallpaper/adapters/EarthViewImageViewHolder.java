@@ -14,7 +14,7 @@ import com.github.p1va.earthviewwallpaper.R;
 /**
  * The image view holder
  */
-class ImageViewHolder extends RecyclerView.ViewHolder {
+class EarthViewImageViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * the image view
@@ -30,7 +30,7 @@ class ImageViewHolder extends RecyclerView.ViewHolder {
      * Initializes new instance of view holder
      * @param view the parent view
      */
-    ImageViewHolder(View view) {
+    EarthViewImageViewHolder(View view) {
         super(view);
 
         // Create new image view
