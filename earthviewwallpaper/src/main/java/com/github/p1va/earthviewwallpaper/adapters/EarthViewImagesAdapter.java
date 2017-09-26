@@ -42,7 +42,6 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
         mQuery = query;
     }
 
-
     /**
      * Called when view holder is created
      *
@@ -79,8 +78,10 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Start set wallpaper activity
                 Intent intent = new Intent(mContext, SetWallpaperActivity.class);
                 intent.putExtra("url", image.photoUrl);
+                intent.putExtra("label", getLabel(image));
                 mContext.startActivity(intent);
             }
         });
@@ -116,6 +117,12 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
         return mQuery != null ? mQuery.getCount() : 0;
     }
 
+    /**
+     * Gets the item at the specified position
+     *
+     * @param position the position
+     * @return the item at the position
+     */
     private EarthViewImage getItem(int position) {
         return EarthViewImage.fromDocument(
                 mQuery.getRow(position).getDocument());

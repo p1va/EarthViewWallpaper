@@ -2,10 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.github.p1va.earthviewwallpaper">
 
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+
     <application
         android:name="EarthviewWallpaperApplication"
-        android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -21,8 +23,7 @@
             android:name=".ui.SetWallpaperActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_set_wallpaper"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/FullscreenTheme">
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.p1va.earthviewwallpaper.ui.MainActivity"/>
