@@ -2,11 +2,8 @@ package com.github.p1va.earthviewwallpaper.ui;
 
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.github.p1va.earthviewwallpaper.R;
 import com.squareup.picasso.Picasso;
@@ -37,8 +34,12 @@ public class SetWallpaperActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_wallpaper);
 
         // Set support toolbar
-        setSupportActionBar((Toolbar) findViewById(R.id.set_wallpaper_toolbar));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.set_wallpaper_toolbar);
 
+
+        //setSupportActionBar(toolbar);
+
+        /*
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -47,18 +48,16 @@ public class SetWallpaperActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+        } */
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        TouchImageView mImageView = (TouchImageView) findViewById(R.id.image);
+        TouchImageView mImageView = (TouchImageView) findViewById(R.id.set_wallpaper_image);
         mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mImageView.resetZoom();
 
         String url = getIntent().getStringExtra("url");
         String label = getIntent().getStringExtra("label");
 
-        getSupportActionBar().setTitle(label);
+        //getSupportActionBar().setTitle(label);
 
         mUri = Uri.parse(url);
 
@@ -109,6 +108,12 @@ public class SetWallpaperActivity extends AppCompatActivity {
             }
 
             return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            Toast toast = Toast.makeText(SetWallpaperActivity.this, "Wallpaper set", Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 }
