@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,8 +32,14 @@ public class MainActivity extends AppCompatActivity {
         // Set the content view
         setContentView(R.layout.activity_main);
 
+        // Set support toolbar
+        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+
+        // Set icon
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher_no_background);
+
         // Find recycler view
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
 
         // Create an instance of the images adapter
         EarthViewImagesAdapter mImagesAdapter = new EarthViewImagesAdapter(this,
@@ -89,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startAboutActivity() {
         new LibsBuilder()
-                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                .withActivityStyle(Libs.ActivityStyle.LIGHT)
                 .withAboutIconShown(true)
                 .withAboutVersionShown(true)
                 .withAboutDescription("This is a small sample which can be set in the about my app description file.<br /><b>You can style this with html markup :D</b>")

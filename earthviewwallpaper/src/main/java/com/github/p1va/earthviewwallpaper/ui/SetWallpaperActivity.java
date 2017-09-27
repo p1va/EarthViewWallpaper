@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,9 @@ public class SetWallpaperActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_set_wallpaper);
+
+        // Set support toolbar
+        setSupportActionBar((Toolbar) findViewById(R.id.set_wallpaper_toolbar));
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getWindow().getDecorView().setSystemUiVisibility(
