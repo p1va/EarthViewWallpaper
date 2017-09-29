@@ -6,6 +6,7 @@ import com.facebook.stetho.Stetho;
 import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
 import com.github.p1va.earthviewwallpaper.util.CacheMemoryUtils;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
+import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
@@ -24,6 +25,15 @@ public class EarthviewWallpaperApplication extends Application {
     public void onCreate() {
 
         super.onCreate();
+
+        // Setup Leak Canary
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+
+        LeakCanary.install(this);
 
         // Setup Timber
         if(BuildConfig.DEBUG) {

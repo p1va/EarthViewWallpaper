@@ -3,7 +3,6 @@ package com.github.p1va.earthviewwallpaper.ui;
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -12,11 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.github.p1va.earthviewwallpaper.R;
 import com.github.p1va.earthviewwallpaper.util.LayoutUtils;
 import com.squareup.picasso.Picasso;
@@ -35,7 +36,7 @@ public class SetWallpaperActivity extends AppCompatActivity {
     /**
      * The URI of the image
      */
-    Uri mUri;
+    String mUri;
 
     /**
      * The image view responsible for showing the image
@@ -50,16 +51,33 @@ public class SetWallpaperActivity extends AppCompatActivity {
     Bitmap mImage;
 
     /**
+     * The animation view
+     */
+    LottieAnimationView mAnimationView;
+
+    /**
      * The target
      */
     Target mTarget = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             Timber.d("on bitmap loaded");
-            mImage = bitmap;
-            mImageView.setImageBitmap(bitmap);
 
-            //Blurry.with(SetWallpaperActivity.this).from(bitmap).into(mImageView);
+            mImage = bitmap;
+
+            // Get image view
+            mImageView = (TouchImageView) findViewById(R.id.set_wallpaper_image);
+            mImageView.setImageBitmap(bitmap);
+            mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mImageView.resetZoom();
+
+            // Stop animation view if playing
+            if(mAnimationView.isAnimating()) {
+                mAnimationView.pauseAnimation();
+            }
+
+            // Hide animation view
+            mAnimationView.setVisibility(View.GONE);
         }
 
         @Override
@@ -85,12 +103,9 @@ public class SetWallpaperActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_wallpaper);
 
         // Get extra arguments
-        String url = getIntent().getStringExtra("url");
+        mUri = getIntent().getStringExtra("url");
         String label = getIntent().getStringExtra("label");
         String attribution = getIntent().getStringExtra("attribution");
-
-        // Parse the uri
-        mUri = Uri.parse(url);
 
         // Find both status and nav bars heights
         int statusBarHeight = LayoutUtils.getStatusBarHeight(this);
@@ -105,7 +120,7 @@ public class SetWallpaperActivity extends AppCompatActivity {
 
         // Set toolbar as a support action bar
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set system layout to fullscreen
@@ -125,11 +140,22 @@ public class SetWallpaperActivity extends AppCompatActivity {
         locationTextView.setText(label);
         attributionTextView.setText(attribution);
 
+        /*LottieComposition.Factory.fromAssetFileName(this, "whale.json", new OnCompositionLoadedListener() {
+            @Override
+            public void onCompositionLoaded(@Nullable LottieComposition composition) {
+
+            }
+        });*/
+
+        // Find animation view
+        mAnimationView = (LottieAnimationView) findViewById(R.id.set_wallpaper_animation_view);
+        mAnimationView.setAnimation("whale.json", LottieAnimationView.CacheStrategy.Strong);
+        mAnimationView.loop(true);
+        mAnimationView.playAnimation();
+
         // Get image view
         mImageView = (TouchImageView) findViewById(R.id.set_wallpaper_image);
-        mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        mImageView.resetZoom();
-        mImageView.setImageResource(R.mipmap.ic_launcher);
+        mImageView.setImageResource(R.mipmap.transparent);
 
         // Load image into the target
         Picasso.with(this)
@@ -172,10 +198,10 @@ public class SetWallpaperActivity extends AppCompatActivity {
     /**
      * The set wallpaper task
      */
-    private class SetWallpaperTask extends AsyncTask<Uri, Integer, Integer> {
+    private class SetWallpaperTask extends AsyncTask<String, Integer, Integer> {
 
         @Override
-        protected Integer doInBackground(Uri... urls) {
+        protected Integer doInBackground(String... urls) {
 
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(SetWallpaperActivity.this);
 

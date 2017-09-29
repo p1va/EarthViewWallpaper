@@ -81,6 +81,7 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
                 // Start set wallpaper activity
                 Intent intent = new Intent(mContext, SetWallpaperActivity.class);
                 intent.putExtra("url", image.photoUrl);
+                intent.putExtra("previewUrl", image.thumbUrl);
                 intent.putExtra("label", getLabel(image));
                 intent.putExtra("attribution", image.attribution);
                 mContext.startActivity(intent);
