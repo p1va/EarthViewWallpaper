@@ -44,6 +44,8 @@ dependencies {
     compile 'jp.wasabeef:picasso-transformations:2.1.2'
     compile 'com.android.support:support-v4:26.+'
     compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.airbnb.android:lottie:2.1.2'
+    compile 'jp.wasabeef:blurry:2.1.1'
     compile('com.mikepenz:aboutlibraries:5.9.7@aar') {
         transitive = true
     }

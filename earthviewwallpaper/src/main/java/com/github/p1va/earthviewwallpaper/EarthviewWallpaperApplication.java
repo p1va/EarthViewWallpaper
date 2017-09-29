@@ -35,6 +35,11 @@ public class EarthviewWallpaperApplication extends Application {
                 .memoryCache(new LruCache(CacheMemoryUtils.calculateSize(this)))
                 .build();
 
+        if(BuildConfig.DEBUG) {
+            picasso.setLoggingEnabled(true);
+            picasso.setIndicatorsEnabled(true);
+        }
+
         Picasso.setSingletonInstance(picasso);
 
         // Setup Stetho
