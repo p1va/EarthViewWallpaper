@@ -84,6 +84,8 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
                 intent.putExtra("previewUrl", image.thumbUrl);
                 intent.putExtra("label", getLabel(image));
                 intent.putExtra("attribution", image.attribution);
+                intent.putExtra("mapsLink", image.mapsLink);
+
                 mContext.startActivity(intent);
             }
         });

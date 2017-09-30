@@ -1,12 +1,17 @@
 package com.github.p1va.earthviewwallpaper.ui;
 
 import android.app.WallpaperManager;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -106,25 +110,30 @@ public class SetWallpaperActivity extends AppCompatActivity {
         mUri = getIntent().getStringExtra("url");
         String label = getIntent().getStringExtra("label");
         String attribution = getIntent().getStringExtra("attribution");
+        final String mapsLink = getIntent().getStringExtra("mapsLink");
+
+        // Set system layout to fullscreen
+        LayoutUtils.setSystemUiToFullscreen(getWindow());
 
         // Find both status and nav bars heights
         int statusBarHeight = LayoutUtils.getStatusBarHeight(this);
         int navBarHeight = LayoutUtils.getNavBarHeight(this);
 
-        // Set top margin of app bar layout equals to status bar height
-        // In this way they don't overlap each others
-        LayoutUtils.setMargins(findViewById(R.id.set_wallpaper_appbar), 0, statusBarHeight, 0, 0);
-
         // Get the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.set_wallpaper_toolbar);
+
+        // Set top margin of app bar layout equals to status bar height
+        // In this way they don't overlap each others
+        LayoutUtils.setMargins(toolbar, 0, statusBarHeight, 0, 0);
 
         // Set toolbar as a support action bar
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set system layout to fullscreen
-        LayoutUtils.setSystemUiToFullscreen(getWindow());
+        //if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        //    getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.black_overlay));
+        //}
 
         // Find bottom layout
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.set_wallpaper_text_layout);
@@ -133,12 +142,27 @@ public class SetWallpaperActivity extends AppCompatActivity {
         LayoutUtils.setMargins(linearLayout, 0, 0, 0, navBarHeight);
 
         // Find text views
-        TextView locationTextView = (TextView) findViewById(R.id.set_wallpaper_location_text_view);
-        TextView attributionTextView = (TextView) findViewById(R.id.set_wallpaper_attribution_text_view);
+        AppCompatTextView locationTextView = (AppCompatTextView) findViewById(R.id.set_wallpaper_location_text_view);
+        AppCompatTextView attributionTextView = (AppCompatTextView) findViewById(R.id.set_wallpaper_attribution_text_view);
+        AppCompatTextView exploreTextView = (AppCompatTextView) findViewById(R.id.set_wallpaper_explore_text_view);
 
         // Set label and attribution values
         locationTextView.setText(label);
         attributionTextView.setText(attribution);
+        exploreTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Timber.d("Opening maps link " + mapsLink);
+                Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapsLink));
+                startActivity(linkIntent);
+            }
+        });
+
+        Drawable normalDrawable = ContextCompat.getDrawable(this, R.mipmap.ic_explore_black_24dp);
+        Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
+        DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(this, R.color.colorExploreLink));
+
+        exploreTextView.setCompoundDrawablesWithIntrinsicBounds(wrapDrawable, null, null, null);
 
         /*LottieComposition.Factory.fromAssetFileName(this, "whale.json", new OnCompositionLoadedListener() {
             @Override

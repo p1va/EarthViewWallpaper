@@ -4,6 +4,8 @@
     <style name="AppTheme.TranslucentStatus">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:statusBarColor">@color/black_overlay</item>
         <item name="android:navigationBarColor">@color/black_overlay</item>
     </style>

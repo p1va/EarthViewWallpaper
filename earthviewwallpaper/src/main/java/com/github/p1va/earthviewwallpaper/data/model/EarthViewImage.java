@@ -23,8 +23,8 @@ public class EarthViewImage {
     public String downloadUrl;
     public String earthLink;
     public String earthTitle;
-    public String lat;
-    public String lng;
+    public String latitude;
+    public String longitude;
     public String mapsLink;
     public String mapsTitle;
     public String nextApi;
@@ -47,8 +47,8 @@ public class EarthViewImage {
         image.earthLink = (String) document.getProperty("earthLink");
         image.earthTitle = (String) document.getProperty("earthTitle");
         image.id = (String) document.getProperty("id");
-        image.lat = (String) document.getProperty("lat");
-        image.lng = (String) document.getProperty("lng");
+        image.latitude = (String) document.getProperty("latitude");
+        image.longitude = (String) document.getProperty("longitude");
         image.mapsLink = (String) document.getProperty("mapsLink");
         image.mapsTitle = (String) document.getProperty("mapsTitle");
         image.nextApi = (String) document.getProperty("nextApi");

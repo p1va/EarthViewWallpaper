@@ -23,14 +23,14 @@
         android:layout_centerHorizontal="true"
         android:background="#70000000"
         android:textColor="#FFFFFF"
-        android:gravity="start"
+        android:gravity="center|start"
         android:paddingLeft="8dp"
         android:paddingStart="8dp"
         android:paddingRight="8dp"
         android:paddingEnd="8dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:textSize="16sp"/>
+        android:textSize="14sp"/>
 
 
 </RelativeLayout>
