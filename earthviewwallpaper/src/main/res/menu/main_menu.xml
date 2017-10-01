@@ -3,11 +3,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
+        android:icon="@mipmap/ic_shuffle_black_24dp"
         android:id="@+id/action_shuffle"
         android:title="@string/shuffle"
-        app:showAsAction="never"/>
+        app:showAsAction="always"/>
 
     <item
+        android:icon="@mipmap/ic_info_outline_black_18dp"
         android:id="@+id/action_about"
         android:title="@string/about"
         app:showAsAction="never"/>

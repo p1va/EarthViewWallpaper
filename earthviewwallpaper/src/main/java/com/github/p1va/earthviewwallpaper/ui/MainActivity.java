@@ -1,6 +1,9 @@
 package com.github.p1va.earthviewwallpaper.ui;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+
+        Drawable drawable = menu.findItem(R.id.action_shuffle).getIcon();
+
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.actionBarActionsTint));
+        menu.findItem(R.id.action_shuffle).setIcon(drawable);
+
         return true;
     }
 
