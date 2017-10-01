@@ -43,6 +43,15 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
     }
 
     /**
+     * Sets the query
+     *
+     * @param query the query
+     */
+    public void setQuery(QueryEnumerator query) {
+        mQuery = query;
+    }
+
+    /**
      * Called when view holder is created
      *
      * @param parent   the parent view group

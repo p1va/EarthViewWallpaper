@@ -229,34 +229,43 @@ public class EarthViewImagesStore {
      *
      * @return the query enumerator containing results
      */
-    public QueryEnumerator getAllInRandomOrder() {
+    public QueryEnumerator getAllInRandomOrder(boolean forceUpdate) {
 
         Timber.d("Getting all the images in random order");
 
-        // Get the view
-        View view2 = mDatabase.getExistingView(COUCHBASE_VIEW_BY_RANDOM);
+        // If force update is specified
+        if(forceUpdate) {
+            // Retrieve the existing view
+            View existingView = mDatabase.getExistingView(COUCHBASE_VIEW_BY_RANDOM);
+            if(existingView != null) {
+                // Delete it
+                existingView.delete();
+            }
+        }
 
-        if(view2 != null)
-            view2.delete();
-
+        // Get existing view or create it
         View view = mDatabase.getView(COUCHBASE_VIEW_BY_RANDOM);
 
+        // If no map yet
         if(view.getMap() == null) {
 
             Timber.d("Creating view " + COUCHBASE_VIEW_BY_RANDOM + " as it does not exist yet");
 
-            // Create list by country view
+            // Set the map function
             view.setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
 
+                    // Declare random number generation range
                     int min = 1;
                     int max = 100;
 
-                    Random r = new Random();
-                    int randomInt = r.nextInt(max - min + 1) + min;
+                    // Generate random integer
+                    int randomInt = new Random().nextInt(max - min + 1) + min;
 
                     Log.d("Random View", "Emitting document with id " + randomInt);
+
+                    // Emit the document
                     emitter.emit(randomInt, document);
                 }
             }, "1.0");

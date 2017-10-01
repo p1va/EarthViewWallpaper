@@ -19,6 +19,11 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 public class MainActivity extends AppCompatActivity {
 
     /**
+     * The images adapter
+     */
+    EarthViewImagesAdapter mImagesAdapter;
+
+    /**
      * Called when the activity is created
      *
      * @param savedInstanceState the saved instance
@@ -42,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
 
         // Create an instance of the images adapter
-        EarthViewImagesAdapter mImagesAdapter = new EarthViewImagesAdapter(this,
+        mImagesAdapter = new EarthViewImagesAdapter(this,
                 EarthViewImagesStore
                         .getInstance()
-                        .getAllInRandomOrder());
+                        .getAllInRandomOrder(false));
 
         // Create grid layout manager
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -81,14 +86,27 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
-        int id = item.getItemId();
+            // User selected the About option
+            case R.id.action_about:
+                startAboutActivity();
+                return true;
 
-        if(id == R.id.action_about) {
-            startAboutActivity();
+            // User selected the Shuffle option
+            case R.id.action_shuffle:
+                mImagesAdapter.setQuery(
+                        EarthViewImagesStore
+                                .getInstance()
+                                .getAllInRandomOrder(true));
+
+                mImagesAdapter.notifyDataSetChanged();
+                return true;
+
+            // Any other case
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
