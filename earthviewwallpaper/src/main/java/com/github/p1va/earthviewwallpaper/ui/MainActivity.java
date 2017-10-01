@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         EarthViewImagesAdapter mImagesAdapter = new EarthViewImagesAdapter(this,
                 EarthViewImagesStore
                         .getInstance()
-                        .getAll());
+                        .getAllInRandomOrder());
 
         // Create grid layout manager
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);

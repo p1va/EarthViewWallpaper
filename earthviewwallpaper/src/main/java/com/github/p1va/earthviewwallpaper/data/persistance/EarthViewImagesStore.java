@@ -1,6 +1,7 @@
 package com.github.p1va.earthviewwallpaper.data.persistance;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
@@ -10,6 +11,7 @@ import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.Reducer;
+import com.couchbase.lite.View;
 import com.couchbase.lite.android.AndroidContext;
 import com.couchbase.lite.util.ZipUtils;
 import com.github.p1va.earthviewwallpaper.data.model.EarthViewImage;
@@ -17,6 +19,7 @@ import com.github.p1va.earthviewwallpaper.data.model.EarthViewImage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import timber.log.Timber;
 
@@ -27,11 +30,19 @@ import timber.log.Timber;
 public class EarthViewImagesStore {
 
     /**
-     * The couchbase view by country name
+     * The Couchbase view by country name
      */
     private static final String COUCHBASE_VIEW_BY_COUNTRY = "list/listByCountry";
 
+    /**
+     * The Couchbase count view by country
+     */
     private static final String COUCHBASE_VIEW_BY_COUNTRY_COUNT = "list/listByCountryCount";
+
+    /**
+     * The Couchbase view by random
+     */
+    private static final String COUCHBASE_VIEW_BY_RANDOM = "list/listByRandom";
 
     /**
      * The mDatabase name
@@ -43,16 +54,33 @@ public class EarthViewImagesStore {
      */
     private static final String DATABASE_ZIP = "images.zip";
 
+    /**
+     * The instance
+     */
     private static EarthViewImagesStore mInstance = null;
 
+    /**
+     * The manager
+     */
     private static Manager mManager = null;
 
+    /**
+     * The database
+     */
     private static Database mDatabase = null;
 
+    /**
+     * Creates new instance of EarthViewImagesStore
+     */
     private EarthViewImagesStore() {
 
     }
 
+    /**
+     * Initializes the singleton
+     *
+     * @param applicationContext the application context
+     */
     public static void initialize(Context applicationContext) {
         try {
             initializeCouchbase(applicationContext);
@@ -61,6 +89,11 @@ public class EarthViewImagesStore {
         }
     }
 
+    /**
+     * Gets the single instance
+     *
+     * @return
+     */
     public static EarthViewImagesStore getInstance() {
         if(mInstance == null) {
             mInstance = new EarthViewImagesStore();
@@ -68,6 +101,57 @@ public class EarthViewImagesStore {
         return mInstance;
     }
 
+    /**
+     * Initializes Couchbase database instance and loads initial data in it.
+     *
+     * @throws Exception
+     */
+    private static void initializeCouchbase(Context applicationContext) throws Exception {
+
+        // Try instanciating the manager
+        try {
+            mManager = new Manager(new AndroidContext(applicationContext), Manager.DEFAULT_OPTIONS);
+        } catch (IOException e) {
+            Timber.e("Unable to instanciate Couchbase manager", e);
+        }
+
+        if(mManager == null) {
+            throw new Exception("Unable to initialize Couchbase");
+        }
+
+        Timber.d("Trying to open " + DATABASE_NAME + " mDatabase");
+
+        // Try to get existing mDatabase
+        try {
+            mDatabase = mManager.getExistingDatabase(DATABASE_NAME);
+        } catch (CouchbaseLiteException e) {
+            Timber.d("Database " + DATABASE_NAME + " does not exists yet");
+        }
+
+        if(mDatabase != null) {
+            return;
+        }
+
+        Timber.d("Creating new " + DATABASE_NAME + " mDatabase from zip file " + DATABASE_ZIP);
+
+        try {
+            ZipUtils.unzip(applicationContext.getAssets().open(DATABASE_ZIP), mManager.getContext().getFilesDir());
+        } catch (IOException e) {
+            Timber.e("Unable to creating new " + DATABASE_NAME + " mDatabase from zip file " + DATABASE_ZIP, e);
+        }
+
+        try {
+            mDatabase = mManager.getExistingDatabase("images");
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Maps results of count by country view
+     *
+     * @return the query enumerator containing results
+     */
     private Map<String, Integer> getImagesCountByCountry() {
 
         Timber.d("Getting images count by country");
@@ -120,51 +204,10 @@ public class EarthViewImagesStore {
     }
 
     /**
-     * Initializes Couchbase database instance and loads initial data in it.
+     * Gets all the images
      *
-     * @throws Exception
+     * @return the query enumerator containing results
      */
-    private static void initializeCouchbase(Context applicationContext) throws Exception {
-
-        // Try instanciating the manager
-        try {
-            mManager = new Manager(new AndroidContext(applicationContext), Manager.DEFAULT_OPTIONS);
-        } catch (IOException e) {
-            Timber.e("Unable to instanciate Couchbase manager", e);
-        }
-
-        if(mManager == null) {
-            throw new Exception("Unable to initialize Couchbase");
-        }
-
-        Timber.d("Trying to open " + DATABASE_NAME + " mDatabase");
-
-        // Try to get existing mDatabase
-        try {
-            mDatabase = mManager.getExistingDatabase(DATABASE_NAME);
-        } catch (CouchbaseLiteException e) {
-            Timber.d("Database " + DATABASE_NAME + " does not exists yet");
-        }
-
-        if(mDatabase != null) {
-            return;
-        }
-
-        Timber.d("Creating new " + DATABASE_NAME + " mDatabase from zip file " + DATABASE_ZIP);
-
-        try {
-            ZipUtils.unzip(applicationContext.getAssets().open(DATABASE_ZIP), mManager.getContext().getFilesDir());
-        } catch (IOException e) {
-            Timber.e("Unable to creating new " + DATABASE_NAME + " mDatabase from zip file " + DATABASE_ZIP, e);
-        }
-
-        try {
-            mDatabase = mManager.getExistingDatabase("images");
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-    }
-
     public QueryEnumerator getAll() {
         try {
 
@@ -181,6 +224,63 @@ public class EarthViewImagesStore {
         return null;
     }
 
+    /**
+     * Gets all the images in random order
+     *
+     * @return the query enumerator containing results
+     */
+    public QueryEnumerator getAllInRandomOrder() {
+
+        Timber.d("Getting all the images in random order");
+
+        // Get the view
+        View view2 = mDatabase.getExistingView(COUCHBASE_VIEW_BY_RANDOM);
+
+        if(view2 != null)
+            view2.delete();
+
+        View view = mDatabase.getView(COUCHBASE_VIEW_BY_RANDOM);
+
+        if(view.getMap() == null) {
+
+            Timber.d("Creating view " + COUCHBASE_VIEW_BY_RANDOM + " as it does not exist yet");
+
+            // Create list by country view
+            view.setMap(new Mapper() {
+                @Override
+                public void map(Map<String, Object> document, Emitter emitter) {
+
+                    int min = 1;
+                    int max = 100;
+
+                    Random r = new Random();
+                    int randomInt = r.nextInt(max - min + 1) + min;
+
+                    Log.d("Random View", "Emitting document with id " + randomInt);
+                    emitter.emit(randomInt, document);
+                }
+            }, "1.0");
+        }
+
+        // Create query
+        Query query = view.createQuery();
+
+        try {
+            return query.run();
+        } catch (CouchbaseLiteException e) {
+            //TODO: Handle error
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets images by country
+     *
+     * @param country the country
+     * @return the query enumerator containing results
+     */
     public QueryEnumerator getByCountry(String country) {
 
         Timber.d("Getting images of " + country);
