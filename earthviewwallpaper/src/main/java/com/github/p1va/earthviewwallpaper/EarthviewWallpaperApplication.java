@@ -5,6 +5,7 @@ import android.app.Application;
 import com.facebook.stetho.Stetho;
 import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
 import com.github.p1va.earthviewwallpaper.util.CacheMemoryUtils;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.LruCache;
@@ -43,6 +44,7 @@ public class EarthviewWallpaperApplication extends Application {
         // Setup Picasso
         Picasso picasso = new Picasso.Builder(this)
                 .memoryCache(new LruCache(CacheMemoryUtils.calculateSize(this)))
+                .downloader(new OkHttp3Downloader(this))
                 .build();
 
         if(BuildConfig.DEBUG) {

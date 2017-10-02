@@ -1,6 +1,7 @@
 package com.github.p1va.earthviewwallpaper.ui;
 
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.couchbase.lite.QueryEnumerator;
 import com.github.p1va.earthviewwallpaper.R;
 import com.github.p1va.earthviewwallpaper.adapters.EarthViewImagesAdapter;
 import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
@@ -50,10 +52,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
 
         // Create an instance of the images adapter
-        mImagesAdapter = new EarthViewImagesAdapter(this,
-                EarthViewImagesStore
-                        .getInstance()
-                        .getAllInRandomOrder(false));
+        mImagesAdapter = new EarthViewImagesAdapter(this);
 
         // Create grid layout manager
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -66,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Set spacing between images
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, MeasuramentUtils.convertDpToPx(4, this), true));
+
+        // Execute async task to load items
+        new LoadImagesTask().execute(false);
     }
 
     /**
@@ -105,12 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
             // User selected the Shuffle option
             case R.id.action_shuffle:
-                mImagesAdapter.setQuery(
-                        EarthViewImagesStore
-                                .getInstance()
-                                .getAllInRandomOrder(true));
-
-                mImagesAdapter.notifyDataSetChanged();
+                // Execute async task to load items
+                new LoadImagesTask().execute(true);
                 return true;
 
             // Any other case
@@ -129,5 +127,42 @@ public class MainActivity extends AppCompatActivity {
                 .withAboutVersionShown(true)
                 .withAboutDescription("This is a small sample which can be set in the about my app description file.<br /><b>You can style this with html markup :D</b>")
                 .start(this);
+    }
+
+    /**
+     * The task that loads images and sets them on the adapter
+     */
+    private class LoadImagesTask extends AsyncTask<Boolean, Void, QueryEnumerator> {
+
+        /**
+         * Call the database in a background task
+         *
+         * @param booleen flag describing if view needs to be recalculated
+         * @return the query results
+         */
+        @Override
+        protected QueryEnumerator doInBackground(Boolean... booleen) {
+
+            // Get the flag that indicates if random order view
+            // Needs to be re executed
+            boolean forceViewUpdate = booleen[0];
+
+            // Execute query
+            return EarthViewImagesStore
+                    .getInstance()
+                    .getAllInRandomOrder(forceViewUpdate);
+        }
+
+        /**
+         * Called when query is completed.
+         * Sets results to the adapter and notify data set changed
+         *
+         * @param queryRows the query results
+         */
+        @Override
+        protected void onPostExecute(QueryEnumerator queryRows) {
+            mImagesAdapter.setQuery(queryRows);
+            mImagesAdapter.notifyDataSetChanged();
+        }
     }
 }

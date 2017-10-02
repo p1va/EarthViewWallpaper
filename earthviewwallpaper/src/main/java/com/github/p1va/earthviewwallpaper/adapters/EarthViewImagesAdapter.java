@@ -43,6 +43,15 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
     }
 
     /**
+     * Creates new instance of EarthViewImagesAdapter
+     *
+     * @param context the context
+     */
+    public EarthViewImagesAdapter(Context context) {
+        this(context, null);
+    }
+
+    /**
      * Sets the query
      *
      * @param query the query
