@@ -3,8 +3,6 @@ package com.github.p1va.earthviewwallpaper.ui;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +15,7 @@ import com.couchbase.lite.QueryEnumerator;
 import com.github.p1va.earthviewwallpaper.R;
 import com.github.p1va.earthviewwallpaper.adapters.EarthViewImagesAdapter;
 import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
+import com.github.p1va.earthviewwallpaper.util.DrawableUtils;
 import com.github.p1va.earthviewwallpaper.util.MeasuramentUtils;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
@@ -27,6 +26,16 @@ public class MainActivity extends AppCompatActivity {
      * The images adapter
      */
     EarthViewImagesAdapter mImagesAdapter;
+
+    /**
+     * The action bar menu
+     */
+    Menu mMenu;
+
+    /**
+     * The shuflle icon
+     */
+    Drawable mShuffleIcon;
 
     /**
      * Called when the activity is created
@@ -78,14 +87,21 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Get the inflater
         MenuInflater inflater = getMenuInflater();
+
+        // Inflate the menue
         inflater.inflate(R.menu.main_menu, menu);
 
-        Drawable drawable = menu.findItem(R.id.action_shuffle).getIcon();
+        // Keep track of the menu in a field
+        mMenu = menu;
 
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.actionBarActionsTint));
-        menu.findItem(R.id.action_shuffle).setIcon(drawable);
+        // Apply tint to icon
+        Drawable drawable = menu.findItem(R.id.action_shuffle).getIcon();
+        mShuffleIcon = DrawableUtils.tint(this, drawable, R.color.actionBarActionsTint);
+
+        menu.findItem(R.id.action_shuffle).setIcon(mShuffleIcon);
 
         return true;
     }
@@ -135,6 +151,18 @@ public class MainActivity extends AppCompatActivity {
     private class LoadImagesTask extends AsyncTask<Boolean, Void, QueryEnumerator> {
 
         /**
+         * Called before task execution
+         */
+        @Override
+        protected void onPreExecute() {
+            if(mMenu != null) {
+                final MenuItem item = mMenu.findItem(R.id.action_shuffle);
+                item.setActionView(R.layout.action_indeterminate_progress);
+                item.expandActionView();
+            }
+        }
+
+        /**
          * Call the database in a background task
          *
          * @param booleen flag describing if view needs to be recalculated
@@ -161,6 +189,15 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected void onPostExecute(QueryEnumerator queryRows) {
+
+            // Update progress bar
+            if(mMenu != null) {
+                final MenuItem item = mMenu.findItem(R.id.action_shuffle);
+                item.collapseActionView();
+                item.setActionView(null);
+            }
+
+            // Notify adapter
             mImagesAdapter.setQuery(queryRows);
             mImagesAdapter.notifyDataSetChanged();
         }
