@@ -94,6 +94,7 @@ public class SetWallpaperActivity extends AppCompatActivity {
             Timber.d("on prepare load");
         }
     };
+    Menu mMenu;
 
     /**
      * Called when activity is created
@@ -131,15 +132,14 @@ public class SetWallpaperActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        //    getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.black_overlay));
-        //}
-
         // Find bottom layout
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.set_wallpaper_text_layout);
 
-        // Set his bottom margin equals to nav bar height so that they don't overlap each others
-        LayoutUtils.setMargins(linearLayout, 0, 0, 0, navBarHeight);
+        int id = getResources().getIdentifier("config_showNavigationBar", "bool", "android");
+        if(id > 0 && getResources().getBoolean(id)) {
+            // Set his bottom margin equals to nav bar height so that they don't overlap each others
+            LayoutUtils.setMargins(linearLayout, 0, 0, 0, navBarHeight);
+        }
 
         // Find text views
         AppCompatTextView locationTextView = (AppCompatTextView) findViewById(R.id.set_wallpaper_location_text_view);
@@ -197,6 +197,7 @@ public class SetWallpaperActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.set_wallpaper_menu, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -208,15 +209,19 @@ public class SetWallpaperActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == android.R.id.home) {
-            // This ID represents the Home or Up button.
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
-        } else if(id == R.id.action_set_wallpaper) {
-            new SetWallpaperTask().execute(mUri);
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+
+            case R.id.action_set_wallpaper:
+                new SetWallpaperTask().execute(mUri);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -239,7 +244,18 @@ public class SetWallpaperActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            final MenuItem item = mMenu.findItem(R.id.action_set_wallpaper);
+            item.setActionView(R.layout.action_set_wallpaper_indeterminate_progress);
+            item.expandActionView();
+        }
+
+        @Override
         protected void onPostExecute(Integer integer) {
+            final MenuItem item = mMenu.findItem(R.id.action_set_wallpaper);
+            item.collapseActionView();
+            item.setActionView(null);
+
             Toast toast = Toast.makeText(SetWallpaperActivity.this, "Wallpaper set", Toast.LENGTH_SHORT);
             toast.show();
         }

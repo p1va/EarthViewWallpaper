@@ -7,7 +7,6 @@ import com.github.p1va.earthviewwallpaper.data.persistance.EarthViewImagesStore;
 import com.github.p1va.earthviewwallpaper.util.CacheMemoryUtils;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
@@ -28,13 +27,13 @@ public class EarthviewWallpaperApplication extends Application {
         super.onCreate();
 
         // Setup Leak Canary
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
+        // if (LeakCanary.isInAnalyzerProcess(this)) {
+        // This process is dedicated to LeakCanary for heap analysis.
+        // You should not init your app in this process.
+        //    return;
+        // }
 
-        LeakCanary.install(this);
+        //LeakCanary.install(this);
 
         // Setup Timber
         if(BuildConfig.DEBUG) {
@@ -47,10 +46,10 @@ public class EarthviewWallpaperApplication extends Application {
                 .downloader(new OkHttp3Downloader(this))
                 .build();
 
-        if(BuildConfig.DEBUG) {
-            picasso.setLoggingEnabled(true);
-            picasso.setIndicatorsEnabled(true);
-        }
+        //if(BuildConfig.DEBUG) {
+        //    picasso.setLoggingEnabled(true);
+        //    picasso.setIndicatorsEnabled(true);
+        //}
 
         Picasso.setSingletonInstance(picasso);
 

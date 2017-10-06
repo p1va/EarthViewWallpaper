@@ -28,6 +28,10 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://github.com/500px/greedo-layout-for-android/raw/master/releases/' }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -48,6 +52,7 @@ dependencies {
     compile 'com.android.support:support-v4:26.+'
     compile 'com.airbnb.android:lottie:2.1.2'
     compile 'jp.wasabeef:blurry:2.1.1'
+    compile 'com.fivehundredpx:greedo-layout:1.1.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     compile('com.mikepenz:aboutlibraries:5.9.7@aar') {

@@ -23,6 +23,26 @@ import jp.wasabeef.picasso.transformations.CropTransformation;
 public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageViewHolder> {
 
     /**
+     * The image width in pixels
+     */
+    private static final int IMAGE_WIDTH_PX = 250;
+
+    /**
+     * The image height in pixels
+     */
+    private static final int IMAGE_HEIGHT_PX = 400;
+
+    /**
+     * The image width in dp
+     */
+    private int imageWidthDp;
+
+    /**
+     * The image height in dp
+     */
+    private int imageHeightDp;
+
+    /**
      * The context
      */
     private Context mContext;
@@ -37,18 +57,10 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
      *
      * @param context the context
      */
-    public EarthViewImagesAdapter(Context context, QueryEnumerator query) {
+    public EarthViewImagesAdapter(Context context, int imageHeightDp) {
         mContext = context;
-        mQuery = query;
-    }
 
-    /**
-     * Creates new instance of EarthViewImagesAdapter
-     *
-     * @param context the context
-     */
-    public EarthViewImagesAdapter(Context context) {
-        this(context, null);
+        this.imageHeightDp = imageHeightDp;
     }
 
     /**
@@ -73,12 +85,14 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
         // Get layout view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_preview, parent, false);
 
-        // Create view holder
+        //view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightDp));
+
+        // Create new view holder
         return new EarthViewImageViewHolder(view);
     }
 
     /**
-     * Called when view holder is binded to view
+     * Called when view holder is bind to view
      *
      * @param holder   the view holder instance
      * @param position the position
@@ -108,12 +122,13 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
             }
         });
 
-        int width = 250;
-        int height = 400;
+        // Set values for height and width
+        //holder.layout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightDp));
 
         // Declare Picasso portrait crop transformation
         CropTransformation transformation = new CropTransformation(
-                width, height,
+                IMAGE_WIDTH_PX,
+                IMAGE_HEIGHT_PX,
                 CropTransformation.GravityHorizontal.CENTER,
                 CropTransformation.GravityVertical.CENTER);
 

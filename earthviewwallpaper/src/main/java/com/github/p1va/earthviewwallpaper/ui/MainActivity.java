@@ -23,6 +23,16 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 public class MainActivity extends AppCompatActivity {
 
     /**
+     * Grid column width in dp
+     */
+    private static final int GRID_COLUMN_WIDTH_DP = 180;
+
+    /**
+     * Grid column height in dp
+     */
+    private static final int GRID_COLUMN_HEIGHT_DP = 288;
+
+    /**
      * The images adapter
      */
     EarthViewImagesAdapter mImagesAdapter;
@@ -31,11 +41,6 @@ public class MainActivity extends AppCompatActivity {
      * The action bar menu
      */
     Menu mMenu;
-
-    /**
-     * The shuflle icon
-     */
-    Drawable mShuffleIcon;
 
     /**
      * Called when the activity is created
@@ -61,10 +66,13 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
 
         // Create an instance of the images adapter
-        mImagesAdapter = new EarthViewImagesAdapter(this);
+        mImagesAdapter = new EarthViewImagesAdapter(this, GRID_COLUMN_HEIGHT_DP);
+
+        // Calculate number of columns
+        int columns = MeasuramentUtils.calculateNoOfColumns(this, GRID_COLUMN_WIDTH_DP);
 
         // Create grid layout manager
-        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
+        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns);
 
         // Set the layout manager to the recycler view
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -72,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
         // Set the images adapter to the recycler view
         recyclerView.setAdapter(mImagesAdapter);
 
-        // Set spacing between images
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, MeasuramentUtils.convertDpToPx(4, this), true));
+        // Set the max row height in pixels
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(columns, MeasuramentUtils.convertDpToPx(4, this), true));
 
         // Execute async task to load items
         new LoadImagesTask().execute(false);
@@ -97,11 +105,14 @@ public class MainActivity extends AppCompatActivity {
         // Keep track of the menu in a field
         mMenu = menu;
 
-        // Apply tint to icon
+        // Retrieve icon to tint
         Drawable drawable = menu.findItem(R.id.action_shuffle).getIcon();
-        mShuffleIcon = DrawableUtils.tint(this, drawable, R.color.actionBarActionsTint);
 
-        menu.findItem(R.id.action_shuffle).setIcon(mShuffleIcon);
+        // Apply tinting
+        Drawable shuffleIcon = DrawableUtils.tint(this, drawable, R.color.actionBarActionsTint);
+
+        // Set tinted icon to menu
+        menu.findItem(R.id.action_shuffle).setIcon(shuffleIcon);
 
         return true;
     }
@@ -157,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             if(mMenu != null) {
                 final MenuItem item = mMenu.findItem(R.id.action_shuffle);
-                item.setActionView(R.layout.action_indeterminate_progress);
+                item.setActionView(R.layout.action_shuffle_indeterminate_progress);
                 item.expandActionView();
             }
         }

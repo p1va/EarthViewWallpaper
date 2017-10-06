@@ -2,6 +2,7 @@ package com.github.p1va.earthviewwallpaper.util;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
@@ -24,9 +25,9 @@ public class MeasuramentUtils {
     private static int screenWidth = 0;
     private static int screenHeight = 0;
 
-    public static int getScreenHeight(Context c) {
+    public static int getScreenHeight(Context context) {
         if(screenHeight == 0) {
-            WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
@@ -36,9 +37,9 @@ public class MeasuramentUtils {
         return screenHeight;
     }
 
-    public static int getScreenWidth(Context c) {
+    public static int getScreenWidth(Context context) {
         if(screenWidth == 0) {
-            WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
@@ -46,5 +47,12 @@ public class MeasuramentUtils {
         }
 
         return screenWidth;
+    }
+
+    public static int calculateNoOfColumns(Context context, int gridItemWidth) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) (dpWidth / gridItemWidth);
+        return noOfColumns;
     }
 }
