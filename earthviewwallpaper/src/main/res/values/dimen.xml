@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="main_activity_column_width">180dp</dimen>
+    <dimen name="main_activity_column_height">350dp</dimen>
+
+    <dimen name="indeterminate_progress_padding">8dp</dimen>
+    <dimen name="indeterminate_progress_size">32dp</dimen>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Earth Wallpapers</string>
+
+    <string name="title_activity_set_wallpaper">Set Wallpaper</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="explore">EXPLORE</string>
+    <string name="about">About</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="wallpaper_set_toast">Wallpaper set</string>
+    <string name="app_description">An app that let you browse and set as your phone wallpaper the beautiful and striking landscapes of Earth View by Google Earth</string>
+    <string name="set_wallpaper">Set wallpaper</string>
+</resources>

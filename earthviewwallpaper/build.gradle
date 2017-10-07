@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        applicationId "com.github.p1va.earthviewwallpaper"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            storeFile file("releasekey.keystore")
+            storePassword "<KEY_HERE>"
+
+            keyAlias "EarthWallpapers"
+            keyPassword "<KEY_HERE>"
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+        }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+repositories {
+    maven { url 'https://github.com/500px/greedo-layout-for-android/raw/master/releases/' }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:design:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:cardview-v7:26.+'
+    compile 'com.couchbase.lite:couchbase-lite-android:1.4.0'
+    compile 'com.facebook.stetho:stetho:1.4.1'
+    compile 'com.robotpajamas.stetho:stetho-couchbase:0.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.okhttp3:okhttp:3.9.0'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'jp.wasabeef:picasso-transformations:2.1.2'
+    compile 'com.android.support:support-v4:26.+'
+    compile 'com.airbnb.android:lottie:2.1.2'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    compile('com.mikepenz:aboutlibraries:5.9.7@aar') {
+        transitive = true
+    }
+    testCompile 'junit:junit:4.12'
+}
+
+
