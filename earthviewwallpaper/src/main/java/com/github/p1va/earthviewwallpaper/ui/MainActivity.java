@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 .withActivityStyle(Libs.ActivityStyle.LIGHT)
                 .withAboutIconShown(true)
                 .withAboutVersionShown(true)
-                .withAboutDescription("This is a small sample which can be set in the about my app description file.<br /><b>You can style this with html markup :D</b>")
+                .withAboutDescription(getResources().getString(R.string.app_description))
                 .start(this);
     }
 
