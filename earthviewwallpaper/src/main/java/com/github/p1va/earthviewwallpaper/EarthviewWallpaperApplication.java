@@ -45,8 +45,8 @@ public class EarthviewWallpaperApplication extends Application {
                 .build();
 
         if(BuildConfig.DEBUG) {
-            picasso.setLoggingEnabled(true);
-            picasso.setIndicatorsEnabled(true);
+            //picasso.setLoggingEnabled(true);
+            //picasso.setIndicatorsEnabled(true);
         }
 
         Picasso.setSingletonInstance(picasso);

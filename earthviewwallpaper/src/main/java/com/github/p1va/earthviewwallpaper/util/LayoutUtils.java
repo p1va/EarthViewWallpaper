@@ -1,6 +1,7 @@
 package com.github.p1va.earthviewwallpaper.util;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.view.View;
@@ -18,10 +19,11 @@ public class LayoutUtils {
 
     /**
      * Sets the margin to the given view
-     * @param view the view
-     * @param leftMargin the left margin
-     * @param topMargin the top margin
-     * @param rightMargin the right margin
+     *
+     * @param view         the view
+     * @param leftMargin   the left margin
+     * @param topMargin    the top margin
+     * @param rightMargin  the right margin
      * @param bottomMargin the bottom margin
      */
     public static void setMargins(View view, int leftMargin, int topMargin, int rightMargin, int bottomMargin) {
@@ -33,7 +35,29 @@ public class LayoutUtils {
     }
 
     /**
+     * Gets a flag describing if the context is in landscape orientation
+     *
+     * @param context the context
+     * @return a flag
+     */
+    public static Boolean isLandscape(Context context) {
+        return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    /**
+     * Gets a flag describing if the context has navigation bar
+     *
+     * @param context the context
+     * @return a flag
+     */
+    public static Boolean hasNavBar(Context context) {
+        int id = context.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
+        return id > 0 && context.getResources().getBoolean(id);
+    }
+
+    /**
      * Gets the status bar height
+     *
      * @param context the context
      * @return the status bar height
      */
@@ -48,6 +72,7 @@ public class LayoutUtils {
 
     /**
      * Gets the navigation bar height
+     *
      * @param context the context
      * @return the navigation bar height
      */
@@ -60,7 +85,7 @@ public class LayoutUtils {
         return 0;
     }
 
-    public static void setSystemUiToFullscreen(Window window){
+    public static void setSystemUiToFullscreen(Window window) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             window.getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE

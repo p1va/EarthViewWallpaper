@@ -21,7 +21,7 @@
         </activity>
         <activity
             android:name=".ui.SetWallpaperActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden"
             android:label="@string/title_activity_set_wallpaper"
             android:theme="@style/AppTheme.TranslucentStatus"
             android:parentActivityName=".ui.MainActivity">

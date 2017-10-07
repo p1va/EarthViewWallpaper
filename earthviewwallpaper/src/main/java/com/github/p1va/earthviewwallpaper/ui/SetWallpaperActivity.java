@@ -132,16 +132,16 @@ public class SetWallpaperActivity extends AppCompatActivity {
         // Set system layout to fullscreen
         LayoutUtils.setSystemUiToFullscreen(getWindow());
 
-        // Find both status and nav bars heights
+        // Retrieve values describing if app is in landscape and if it has nav bar
+        Boolean isLandscape = LayoutUtils.isLandscape(this);
+        Boolean hasNavBar = LayoutUtils.hasNavBar(this);
+
+        // Retrieve both status and navbar heights
         int statusBarHeight = LayoutUtils.getStatusBarHeight(this);
         int navBarHeight = LayoutUtils.getNavBarHeight(this);
 
         // Get the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.set_wallpaper_toolbar);
-
-        // Set top margin of app bar layout equals to status bar height
-        // In this way they don't overlap each others
-        LayoutUtils.setMargins(toolbar, 0, statusBarHeight, 0, 0);
 
         // Set toolbar as a support action bar
         setSupportActionBar(toolbar);
@@ -151,10 +151,17 @@ public class SetWallpaperActivity extends AppCompatActivity {
         // Find bottom layout
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.set_wallpaper_text_layout);
 
-        int id = getResources().getIdentifier("config_showNavigationBar", "bool", "android");
-        if(id > 0 && getResources().getBoolean(id)) {
-            // Set his bottom margin equals to nav bar height so that they don't overlap each others
-            LayoutUtils.setMargins(linearLayout, 0, 0, 0, navBarHeight);
+        // Apply correct margins
+        if(hasNavBar) {
+            if(isLandscape) {
+                LayoutUtils.setMargins(toolbar, 0, statusBarHeight, navBarHeight, 0);
+                LayoutUtils.setMargins(linearLayout, 0, 0, navBarHeight, 0);
+            } else {
+                LayoutUtils.setMargins(toolbar, 0, statusBarHeight, 0, 0);
+                LayoutUtils.setMargins(linearLayout, 0, 0, 0, navBarHeight);
+            }
+        } else {
+            LayoutUtils.setMargins(toolbar, 0, statusBarHeight, 0, 0);
         }
 
         // Find text views
@@ -180,16 +187,22 @@ public class SetWallpaperActivity extends AppCompatActivity {
         exploreTextView.setCompoundDrawablesWithIntrinsicBounds(wrapDrawable, null, null, null);
 
         // Find error layout
-        mErrorLayout = (LinearLayoutCompat) findViewById(R.id.set_wallpaper_error_layout);
+        mErrorLayout = (LinearLayoutCompat)
+
+                findViewById(R.id.set_wallpaper_error_layout);
 
         // Find animation view
-        mAnimationView = (LottieAnimationView) findViewById(R.id.set_wallpaper_animation_view);
+        mAnimationView = (LottieAnimationView)
+
+                findViewById(R.id.set_wallpaper_animation_view);
         mAnimationView.setAnimation("whale.json", LottieAnimationView.CacheStrategy.Strong);
         mAnimationView.loop(true);
         mAnimationView.playAnimation();
 
         // Get image view
-        mImageView = (TouchImageView) findViewById(R.id.set_wallpaper_image);
+        mImageView = (TouchImageView)
+
+                findViewById(R.id.set_wallpaper_image);
         mImageView.setImageResource(R.mipmap.transparent);
 
         // Load image into the target
