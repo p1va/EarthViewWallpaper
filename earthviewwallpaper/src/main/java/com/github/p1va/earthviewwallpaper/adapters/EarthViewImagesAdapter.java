@@ -59,7 +59,6 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
      */
     public EarthViewImagesAdapter(Context context, int imageHeightDp) {
         mContext = context;
-
         this.imageHeightDp = imageHeightDp;
     }
 
@@ -121,9 +120,6 @@ public class EarthViewImagesAdapter extends RecyclerView.Adapter<EarthViewImageV
                 mContext.startActivity(intent);
             }
         });
-
-        // Set values for height and width
-        //holder.layout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightDp));
 
         // Declare Picasso portrait crop transformation
         CropTransformation transformation = new CropTransformation(

@@ -8,12 +8,12 @@
     <shape
         android:innerRadiusRatio="3"
         android:shape="ring"
-        android:thicknessRatio="8"
+        android:thicknessRatio="12"
         android:useLevel="false" >
 
         <size
-            android:height="76dip"
-            android:width="76dip" />
+            android:height="32dp"
+            android:width="32dp" />
 
         <gradient
             android:angle="0"
@@ -23,5 +23,4 @@
             android:useLevel="false" />
 
     </shape>
-
 </rotate>

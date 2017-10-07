@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,10 +32,6 @@ import java.io.IOException;
 
 import timber.log.Timber;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class SetWallpaperActivity extends AppCompatActivity {
 
     /**
@@ -60,6 +57,25 @@ public class SetWallpaperActivity extends AppCompatActivity {
     LottieAnimationView mAnimationView;
 
     /**
+     * The error layout
+     */
+    LinearLayoutCompat mErrorLayout;
+
+    private void hideLoadingAnimation() {
+        // Stop animation view if playing
+        if(mAnimationView.isAnimating()) {
+            mAnimationView.pauseAnimation();
+        }
+
+        // Hide animation view
+        mAnimationView.setVisibility(View.GONE);
+    }
+
+    private void showErrorMessage() {
+        mErrorLayout.setVisibility(View.VISIBLE);
+    }
+
+    /**
      * The target
      */
     Target mTarget = new Target() {
@@ -76,17 +92,13 @@ public class SetWallpaperActivity extends AppCompatActivity {
             mImageView.resetZoom();
 
             // Stop animation view if playing
-            if(mAnimationView.isAnimating()) {
-                mAnimationView.pauseAnimation();
-            }
-
-            // Hide animation view
-            mAnimationView.setVisibility(View.GONE);
+            hideLoadingAnimation();
         }
 
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
-            Timber.w("on bitmap failed");
+            hideLoadingAnimation();
+            showErrorMessage();
         }
 
         @Override
@@ -94,6 +106,10 @@ public class SetWallpaperActivity extends AppCompatActivity {
             Timber.d("on prepare load");
         }
     };
+
+    /**
+     * The menu
+     */
     Menu mMenu;
 
     /**
@@ -152,7 +168,6 @@ public class SetWallpaperActivity extends AppCompatActivity {
         exploreTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timber.d("Opening maps link " + mapsLink);
                 Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapsLink));
                 startActivity(linkIntent);
             }
@@ -164,12 +179,8 @@ public class SetWallpaperActivity extends AppCompatActivity {
 
         exploreTextView.setCompoundDrawablesWithIntrinsicBounds(wrapDrawable, null, null, null);
 
-        /*LottieComposition.Factory.fromAssetFileName(this, "whale.json", new OnCompositionLoadedListener() {
-            @Override
-            public void onCompositionLoaded(@Nullable LottieComposition composition) {
-
-            }
-        });*/
+        // Find error layout
+        mErrorLayout = (LinearLayoutCompat) findViewById(R.id.set_wallpaper_error_layout);
 
         // Find animation view
         mAnimationView = (LottieAnimationView) findViewById(R.id.set_wallpaper_animation_view);
@@ -216,7 +227,7 @@ public class SetWallpaperActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_set_wallpaper:
-                new SetWallpaperTask().execute(mUri);
+                if(mImage != null) new SetWallpaperTask().execute();
                 return true;
 
             default:
@@ -227,10 +238,10 @@ public class SetWallpaperActivity extends AppCompatActivity {
     /**
      * The set wallpaper task
      */
-    private class SetWallpaperTask extends AsyncTask<String, Integer, Integer> {
+    private class SetWallpaperTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
-        protected Integer doInBackground(String... urls) {
+        protected Integer doInBackground(Void... params) {
 
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(SetWallpaperActivity.this);
 
@@ -251,12 +262,18 @@ public class SetWallpaperActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
+        protected void onPostExecute(Integer result) {
+
             final MenuItem item = mMenu.findItem(R.id.action_set_wallpaper);
             item.collapseActionView();
             item.setActionView(null);
 
-            Toast toast = Toast.makeText(SetWallpaperActivity.this, "Wallpaper set", Toast.LENGTH_SHORT);
+            // Display a toast
+            Toast toast = Toast.makeText(
+                    SetWallpaperActivity.this,
+                    SetWallpaperActivity.this.getResources().getString(R.string.wallpaper_set_toast),
+                    Toast.LENGTH_SHORT);
+
             toast.show();
         }
     }

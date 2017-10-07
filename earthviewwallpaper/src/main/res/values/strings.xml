@@ -7,4 +7,5 @@
     <string name="explore">EXPLORE</string>
     <string name="about">About</string>
     <string name="shuffle">Shuffle</string>
+    <string name="wallpaper_set_toast">Wallpaper set</string>
 </resources>

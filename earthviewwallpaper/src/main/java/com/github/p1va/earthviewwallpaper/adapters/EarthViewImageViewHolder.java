@@ -3,7 +3,6 @@ package com.github.p1va.earthviewwallpaper.adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.p1va.earthviewwallpaper.R;
@@ -28,11 +27,6 @@ class EarthViewImageViewHolder extends RecyclerView.ViewHolder {
     TextView textView;
 
     /**
-     * The relative layout
-     */
-    RelativeLayout layout;
-
-    /**
      * Initializes new instance of view holder
      *
      * @param view the parent view
@@ -40,9 +34,8 @@ class EarthViewImageViewHolder extends RecyclerView.ViewHolder {
     EarthViewImageViewHolder(View view) {
         super(view);
 
-        this.layout = view.findViewById(R.id.image_layout);
-        this.textView = view.findViewById(R.id.image_label);
-        this.imageView = view.findViewById(R.id.image_preview);
+        this.textView = view.findViewById(R.id.item_image_preview_label);
+        this.imageView = view.findViewById(R.id.item_image_preview_image);
 
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
